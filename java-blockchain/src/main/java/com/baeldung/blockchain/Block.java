@@ -23,6 +23,10 @@ public class Block {
         this.hash = calculateBlockHash();
     }
 
+    public String getData() {
+        return previousHash + Long.toString(timeStamp) + Integer.toString(nonce) + data;
+    }
+
     public String mineBlock(int prefix) {
         String prefixString = new String(new char[prefix]).replace('\0', '0');
         while (!hash.substring(0, prefix)
@@ -34,7 +38,7 @@ public class Block {
     }
 
     public String calculateBlockHash() {
-        String dataToHash = previousHash + Long.toString(timeStamp) + Integer.toString(nonce) + data;
+        String dataToHash = getData();
         MessageDigest digest = null;
         byte[] bytes = null;
         try {
@@ -48,6 +52,11 @@ public class Block {
             buffer.append(String.format("%02x", b));
         }
         return buffer.toString();
+    }
+
+    public boolean isValid() {
+        String hash = calculateBlockHash();
+        return getHash().substring(0, prefix).equals(prefixString);
     }
 
     public String getHash() {
